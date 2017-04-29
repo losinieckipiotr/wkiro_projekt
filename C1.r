@@ -104,7 +104,8 @@ C1 <-
       c1[[iBand]] <- T
     }
   }
-    
+  
+  return(list(c1, s1))
 
 #removeborders <- function(sin, siz){
 #    sin <- unpadimage(sin, [(siz + 1) / 2, (siz + 1) / 2, (siz - 1) / 2, (siz -1) / 2])
