@@ -23,8 +23,12 @@ readAllImages <- function(train_pos, train_neg, test_pos, test_neg) {
   for (j in 1:length(paths)) {
     images_names <- list.files(paths[j], pattern = "png", full.names = TRUE)
     images <- list()
-    for (i in 1:length(images_names)) {
-      images <- c(images, list(readPNG(images_names[i])))
+    if (length(images_names) == 0) {
+      warning(paths[j], ' is empty')
+    } else {
+      for (i in 1:length(images_names)) {
+        images <- c(images, list(readPNG(images_names[i])))
+      }
     }
     cI <- c(cI, list(images));
   }
