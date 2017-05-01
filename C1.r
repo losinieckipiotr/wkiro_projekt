@@ -1,33 +1,39 @@
-C1 <-
-  function(stim,
-           filters,
-           fSiz,
-           c1SpaceSS,
-           c1ScaleSS,
-           c1OL,
-           INCLUDEBORDERS) {
-    USECONV2 <- 1
-    numScaleBands <- length(c1ScaleSS) + 1
-    numScales <- tail(c1ScaleSS, n = 1) - 1
+C1 <- function(stim,
+               filters,
+               fSiz,
+               c1SpaceSS,
+               c1ScaleSS,
+               c1OL,
+               INCLUDEBORDERS = 0) {
+  #TODO
+  #docs
+
+  require('matlab')
+  #source('unpadimage.r')
+  debugSource('unpadimage.r')
+
+  USECONV2 <- 1
+  numScaleBands <- length(c1ScaleSS) - 1  #convention: last element in c1ScaleSS is max index + 1 
+  numScales <- tail(c1ScaleSS, n = 1) - 1
+  # last index in scaleSS contains scale index where next band would start, i.e., 1 after highest scale!!
+  numSimpleFilters <- floor(length(fSiz) / numScales)
+  ScalesInThisBand <- list()
+  for (iBand in 1:numScaleBands) {
+    ScalesInThisBand[[iBand]] <- c1ScaleSS[iBand]:(c1ScaleSS[iBand + 1] - 1)
+  }
     
-    numSimpleFilters = floor(length(fSiz) / numScales)
-    for (iband in 1:numScaleBands) {
-      ScalesInThisBand[[iBand]] <-
-        c1ScalesSS(iBand):(c1SCaless(iband + 1) - 1)
+  ##Rebuild all filters (of all sizes)
+  ##
+  nFilts = length(fSiz)
+  sqfilter <- list()
+  for (i in 1:nFilts) {
+    sqfilter[[i]] <- reshape(filters[1:(fSiz(i) ^ 2), i], fSiz(i),fSiz(i))
+    if (USECONV2) {
+      sqfilter[[i]] = tail(sqfilter[[i]], 2)
     }
-    
-    
-    ##Rebuild all filters (of all sizes)
-    ##
-    
-    
-    nFilts = length(fSiz)
-    for (i in 1:nFilts) {
-      sqfilter[[i]] <- matrix(filters(1:(fSiz(i) ^ 2), i), nrow = fSiz(i))
-      if (USECONV2) {
-        sqfilter[[i]] = tail(sqfilter[[i]], 2)
-      }
-    }
+  }
+
+  #TODO check and do the rest
     
     ## Calculate all filter responses (s1)
     ##
@@ -103,14 +109,12 @@ C1 <-
       }
       c1[[iBand]] <- T
     }
-  }
-  
-  return(list(c1, s1))
 
-#removeborders <- function(sin, siz){
-#    sin <- unpadimage(sin, [(siz + 1) / 2, (siz + 1) / 2, (siz - 1) / 2, (siz -1) / 2])
-#    sin <- padarray(sin, [(siz + 1) / 2, (siz + 1) / 2], 0, 'pre')
-#    sout <- padarray(sin, [(siz - 1) / 2, (siz - 1) / 2], 0, 'post')
-#     }
-    
-  
+    return(list(c1, s1))
+  }
+
+removeborders <- function(sin, siz) {
+  sin <- unpadimage(sin, c((siz + 1) / 2, (siz + 1) / 2, (siz - 1) / 2, (siz -1) / 2))
+  sin <- padarray(sin, c((siz + 1) / 2, (siz + 1) / 2), 0, 'pre')
+  sout <- padarray(sin, c((siz - 1) / 2, (siz - 1) / 2), 0, 'post')
+}
