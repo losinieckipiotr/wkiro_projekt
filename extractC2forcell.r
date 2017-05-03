@@ -3,15 +3,16 @@ extractC2forcell <- function(filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,cPatches,cIma
   require('matlab')
   
   numPatchSizes = min(numPatchSizes,length(cPatches))
+  print("Done extrC2_1")
   for (i in 1:numPatchSizes){
-    siz = dim(cPatches[[i]])[1]
-    numpatch = dim(cPatches[[i]])[2]
+    siz = size(cPatches[[i]])[1]
+    numpatch = size(cPatches[[i]])[2]
     siz = sqrt(siz/4)
     
     for(j in 1:numpatch){
       tmp = matrix(cPatches[[i]][1:size(cPatches)[1],j], c(siz, siz, 4))
       tmp = rec(tmp)
-      cPatches[[i]](1:size(cPatches)[1],j) = tmp[1:size(tmp)[1]]
+      cPatches[[i]][1:size(cPatches)[1],j] = tmp[1:size(tmp)[1]]
     }
   }
   
