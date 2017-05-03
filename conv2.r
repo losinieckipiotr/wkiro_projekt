@@ -1,6 +1,6 @@
 conv2 <- function(A, B) {
   # Returns the two-dimensional convolution of matrices A and B.
-
+  
   a_size <- dim(A)
   b_size <- dim(B)
   ma <- a_size[1]
@@ -16,11 +16,13 @@ conv2 <- function(A, B) {
     for (k in 1:nc) {
       for (p in 1:ma) {
         for (q in 1:na) {
-          i_x <- j-p+1
+          if (q > k) { break }
+          if (p > j) { break }
           i_y <- k-q+1
-          if ((i_x > 0) & (i_y > 0) & (i_x <= mb) & (i_y <= nb)) {
-            C[j,k] <- C[j,k] + A[p,q]*B[i_x,i_y]
-          }
+          if (i_y > nb) { break }
+          i_x <- j-p+1
+          if (i_x > mb) { break }
+          C[j,k] <- C[j,k] + A[p,q]*B[i_x, i_y]
         }
       }
     }

@@ -39,7 +39,11 @@ unpadimage <- function(i, amnt)
     return
   }
   
-  o <- i[t:b, l:r, ]
+  if (length(dim(i)) == 2) {
+    o <- i[t:b, l:r]
+  } else { #is it bug?
+    o <- i[t:b, l:r, ]
+  }
   
   return (o)
 }
