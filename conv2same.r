@@ -51,8 +51,10 @@ conv2same <- function(A, B) {
   j_i <-c(s_x:e_x)
   k_i <-c(s_y:e_y)
   
-  source('conv2.r')
-  C <- conv2(A, B)
+  #source('conv2.r')
+  #C <- conv2(A, B)
+  source('myConv2.r')
+  C <- myConv2(A, B)
   
   return(C[j_i,k_i])
 }

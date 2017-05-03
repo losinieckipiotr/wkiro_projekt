@@ -2,19 +2,20 @@
 #demonstrates how to use C2 standard model features in a pattern classification framework
 
 #optional clear workspace
-rm(list = ls())
+#rm(list = ls())
 
+DEBUG <- TRUE
+if (DEBUG) {
+  debugSource('readAllImages.r')
+  debugSource('extractRandC1Patches.r')
+  debugSource('init_gabor.r')
+}
 #source files
 source('readAllImages.r')
 source('extractRandC1Patches.r')
 source('init_gabor.r')
 
-#TODO
-#addpath osu-svm/ %put your own path to osusvm here
-
-useSVM <- FALSE #if you do not have osusvm installed you can turn this
-                #to 0, so that the classifier would be a NN classifier
-                #note: NN is not a great classifier for these features
+useSVM <- FALSE
 
 READPATCHESFROMFILE <- FALSE  #use patches that were already computed
                               #(e.g., from natural images)
