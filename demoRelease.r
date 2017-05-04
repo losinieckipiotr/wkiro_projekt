@@ -9,14 +9,14 @@ if (DEBUG) {
   debugSource('readAllImages.r')
   debugSource('extractRandC1Patches.r')
   debugSource('init_gabor.r')
+  debugSource('extractC2forcell.r')
 }
-#source files
 source('readAllImages.r')
 source('extractRandC1Patches.r')
 source('init_gabor.r')
+source('extractC2forcell.r')
 
 useSVM <- FALSE
-
 READPATCHESFROMFILE <- FALSE  #use patches that were already computed
                               #(e.g., from natural images)
 
@@ -40,14 +40,15 @@ if (length(cI$train_pos) == 0 | length(cI$train_neg) == 0) {
 #below the c1 prototypes are extracted from the images/ read from file
 if (!READPATCHESFROMFILE) {
   tic <- Sys.time()
-  numPatchesPerSize <- 250  #more will give better results, but will
+  numPatchesPerSize <- 10  #more will give better results, but will
                             #take more time to compute
   cPatches <- extractRandC1Patches(cI$train_pos, numPatchSizes, numPatchesPerSize, patchSizes) #fix: extracting from positive only
   
   totaltimespectextractingPatches <- Sys.time() - tic
   t_str <- as.numeric(totaltimespectextractingPatches, units = "secs")
-  print(paste('extractiong patches takes ', t_str, ' seconds'))
+  print(paste('extracting patches takes ', t_str, ' seconds'))
 } else {
+  stop('NOT IMPLEMENTED')
   #TODO
   #print('reading patches');
   #cPatches = load('PatchesFromNaturalImages250per4sizes','cPatches');
@@ -74,15 +75,25 @@ c1OL                <- init_gabor_ret_val[[3]]
 numSimpleFilters    <- init_gabor_ret_val[[4]]
 print('done')
 
-#TODO
-#%The actual C2 features are computed below for each one of the training/testing directories
-#tic
-#for i = 1:4,
-#C2res{i} = extractC2forcell(filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,cPatches,cI{i},numPatchSizes);
-#toc
-#end
-#totaltimespectextractingC2 = toc;
-#
+#The actual C2 features are computed below for each one of the training/testing directories
+totaltimespectextractingC2 <- 0
+C2res <- list()
+tic <- Sys.time()
+for (i in 1:4) {
+  C2res[[i]] = extractC2forcell(filters,
+                                fSiz,
+                                c1SpaceSS,
+                                c1ScaleSS,
+                                c1OL,
+                                cPatches,
+                                cI[[i]],
+                                numPatchSizes)
+  extractC2forcellTime <- Sys.time() - tic
+  t_str <- as.numeric(extractC2forcellTime, units = "secs")
+  totaltimespectextractingC2 <- t_str + totaltimespectextractingC2
+  print(paste('extracting C2 takes ', t_str, ' seconds'))
+}
+
 #%Simple classification code
 #XTrain = [C2res{1} C2res{2}]; %training examples as columns 
 #XTest =  [C2res{3},C2res{4}]; %the labels of the training set
