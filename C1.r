@@ -17,12 +17,12 @@ C1 <- function(stim,
     debugSource('unpadimage.r')
     debugSource('sumfilter.r')
     debugSource('conv2same.r')
-    debugSource('maxfilter2.r')
+    debugSource('maxfilter.r')
   } else {
     source('unpadimage.r')
     source('sumfilter.r')
     source('conv2same.r')
-    source('maxfilter2.r')
+    source('maxfilter.r')
   }
 
   USECONV2 <- 1
@@ -132,7 +132,7 @@ C1 <- function(stim,
     for (iFilt in 1:numSimpleFilters) {
       t <- c1[[iBand]]
       t <- t[[iFilt]]
-      ret <- maxfilter2(t, c(0, 0, poolRange - 1, poolRange - 1))
+      ret <- maxfilter(t, c(0, 0, poolRange - 1, poolRange - 1))
       
       if (PRINT) {
         temp = Image(data = t(ret), dim(t(ret)), colormode = 0)

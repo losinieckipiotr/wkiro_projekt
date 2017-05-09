@@ -1,6 +1,6 @@
-C2 <- function(stim,filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,s2Target,c1){
+C2 <- function(stim,filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,s2Target,c1 = NULL){
   
-  DEBUG <- TRUE
+  DEBUG <- FALSE
   if (DEBUG) {
     debugSource('WindowedPatchDistance.r')
   } else {
@@ -9,8 +9,7 @@ C2 <- function(stim,filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,s2Target,c1){
   
   s1 <- list()
   
-  nargin = nargin <- length(as.list(match.call())) - 1
-  if (nargin < 8) {
+  if (is.null(c1)) {
     C1_output <- C1(stim,filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL)
     c1 <- C1_output[[1]]
     s1 <- C1_output[[2]]
@@ -50,9 +49,6 @@ C2 <- function(stim,filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,s2Target,c1){
       c2[iCenter] <- min(m)
     }
   }
-  
-  print('C2 done')
-  
   output = list(c2, s2, c1, s1)
   
   return(output)

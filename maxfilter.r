@@ -1,12 +1,11 @@
-maxfilter2 <- function(I, radius) {
+maxfilter <- function(I, radius) {
   #
   #TODO docs
   source('padimage.r')
   source('unpadimage.r')
   
-  #I <- matrix()
-  
   if (length(radius) == 1) {
+    #TODO
     stop('NOT IMPLEMENTED')
     #I <- padimage(I, radius)
     #n <- dim(I)[1]

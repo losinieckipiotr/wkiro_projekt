@@ -1,4 +1,4 @@
-library(matlab)
+require('matlab')
 
 padimage <- function(i,amnt,method) {
   if (length(as.list(match.call())) - 1 < 3)

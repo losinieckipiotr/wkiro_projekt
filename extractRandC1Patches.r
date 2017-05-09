@@ -1,4 +1,7 @@
-extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSize, patchSizes) {
+extractRandC1Patches <- function(cItrainingOnly,
+                                 numPatchSizes = 4,
+                                 numPatchesPerSize = 250,
+                                 patchSizes = seq(4, 16, 4)) {
   #extracts random prototypes as part of the training of the C2 classification 
   #system. 
   #Note: we extract only from BAND 2. Extracting from all bands might help
@@ -9,6 +12,7 @@ extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSiz
   #patchSizes is the vector of the patche sizes
   
   DEBUG <- TRUE
+  RANDVALS <- FALSE
   
   require('matlab')
   if (DEBUG) {
@@ -16,14 +20,6 @@ extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSiz
   } else {
     source('C1.r')
   }
-  
-  #TODO some default values
-  #if nargin<2
-  #numPatchSizes = 4;
-  #numPatchesPerSize = 250;
-  #patchSizes = 4:4:16;
-  #end
-  
   nImages <- length(cItrainingOnly)
   
   #----Settings for Training the random patches--------#
@@ -54,7 +50,7 @@ extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSiz
   }
   
   for (i in 1:numPatchesPerSize) {
-    if (DEBUG) {
+    if (!RANDVALS) {
       ii <- floor(0.5*nImages) + 1
     } else {
       ii <- floor(runif(1)*nImages) + 1
@@ -66,7 +62,7 @@ extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSiz
     
     c1_reval <- C1(stim, filters, fSiz, c1SpaceSS, c1ScaleSS, c1OL)
     c1source <- c1_reval[[1]]
-    #s1source <- c1_reval[[2]] #it seems that it is unused
+    s1source <- c1_reval[[2]] #it seems that it is unused
     
     #new C1 interface
     d <- dim(c1source[[1]][[1]])
@@ -80,7 +76,7 @@ extractRandC1Patches <- function(cItrainingOnly, numPatchSizes, numPatchesPerSiz
     bsize[2] <- dim(b)[2]
     
     for (j in 1:numPatchSizes) {
-      if (DEBUG) {
+      if (!RANDVALS) {
         xy <- floor(c(0.1, 0.8)*(bsize - patchSizes[j])) + 1
       } else {
         xy <- floor(runif(2)*(bsize - patchSizes[j])) + 1

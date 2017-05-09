@@ -1,12 +1,17 @@
 sumfilter <- function(I, radius) {
-  #
   #I is the input image
   #radius is the additional radius of the window, i.e., 5 means 11 x 11
   #if a four value vector is specified for radius, then any rectangular support may be used for max.
   #in the order left top right bottom.
+  
+  DEBUG <- FALSE
+  
   require('matlab')
-  #source('conv2vec.r')
-  debugSource('conv2vec.r')
+  if (DEBUG) {
+    debugSource('conv2vec.r')
+  } else {
+    source('conv2vec.r')
+  }
   
   if (length(dim(I)) > 2) {
     stop('Only single-channel images are allowed')

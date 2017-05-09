@@ -1,6 +1,6 @@
 WindowedPatchDistance <- function(Im, Patch) {
   
-  DEBUG <- TRUE
+  DEBUG <- FALSE
   if (DEBUG) {
     debugSource('sumfilter.r')
     debugSource('conv2same.r')

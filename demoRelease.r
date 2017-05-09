@@ -2,9 +2,9 @@
 #demonstrates how to use C2 standard model features in a pattern classification framework
 
 #optional clear workspace
-#rm(list = ls())
+rm(list = ls())
 
-DEBUG <- TRUE
+DEBUG <- FALSE
 if (DEBUG) {
   debugSource('readAllImages.r')
   debugSource('extractRandC1Patches.r')
@@ -40,7 +40,7 @@ if (length(cI$train_pos) == 0 | length(cI$train_neg) == 0) {
 #below the c1 prototypes are extracted from the images/ read from file
 if (!READPATCHESFROMFILE) {
   tic <- Sys.time()
-  numPatchesPerSize <- 10  #more will give better results, but will
+  numPatchesPerSize <- 1  #more will give better results, but will
                             #take more time to compute
   cPatches <- extractRandC1Patches(cI$train_pos, numPatchSizes, numPatchesPerSize, patchSizes) #fix: extracting from positive only
   
@@ -94,16 +94,29 @@ for (i in 1:4) {
   print(paste('extracting C2 takes ', t_str, ' seconds'))
 }
 
-#%Simple classification code
-#XTrain = [C2res{1} C2res{2}]; %training examples as columns 
-#XTest =  [C2res{3},C2res{4}]; %the labels of the training set
-#ytrain = [ones(size(C2res{1},2),1);-ones(size(C2res{2},2),1)];%testing examples as columns
-#ytest = [ones(size(C2res{3},2),1);-ones(size(C2res{4},2),1)]; %the true labels of the test set
-#if useSVM
-#Model = CLSosusvm(XTrain,ytrain);  %training
-#[ry,rw] = CLSosusvmC(XTest,Model); %predicting new labels
-#else %use a Nearest Neighbor classifier
-#Model = CLSnn(XTrain, ytrain); %training
-#[ry,rw] = CLSnnC(XTest,Model); %predicting new labels
-#end  
-#successrate = mean(ytest==ry) %a simple classification score
+#Simple classification code
+XTrain <- cbind(C2res[[1]], C2res[[2]]) #training examples as columns
+XTest  <-  cbind(C2res[[3]], C2res[[4]]) #the labels of the training set
+ytrain <- matrix(c(rep(1, dim(C2res[[1]])[2]), rep(-1, dim(C2res[[2]])[2])), ncol = 1)
+ytest  <- matrix(c(rep(1, dim(C2res[[3]])[2]), rep(-1, dim(C2res[[4]])[2])), ncol = 1)
+
+ry <- c()
+if (useSVM) {
+  require('e1071')
+  train <- t(XTrain)
+  test <- t(XTest)
+  cl <- factor(ytrain)
+  model <- svm(train, cl)
+  pred <- predict(model, test)
+  ry <- as.integer(as.vector(pred))
+} else { #use a Nearest Neighbor classifier
+  require('class')
+  train <- t(XTrain)
+  test <- t(XTest)
+  cl <- factor(ytrain)
+  knn_ret <- knn(train, test, cl)
+  ry <- as.integer(as.vector(knn_ret))
+}
+
+successrate <- mean(as.integer(ytest == ry)) #a simple classification score
+print(successrate)

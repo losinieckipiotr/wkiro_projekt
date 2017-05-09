@@ -2,7 +2,7 @@ extractC2forcell <- function(filters,fSiz,c1SpaceSS,c1ScaleSS,c1OL,cPatches,cIma
   
   require('matlab')
   
-  DEBUG <- TRUE
+  DEBUG <- FALSE
   if (DEBUG) {
     debugSource('C2.r')
   } else {
